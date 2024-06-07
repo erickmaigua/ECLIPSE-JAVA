@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.FileReader;
-
+import org.json.JSONObject;
+import org.json.JSONTokener;
 public class MotoGrupoF extends ParqueaderoGrupoF {
 	static Scanner cin = new Scanner(System.in);
 	public MotoGrupoF(String tipoVeiculo, String fechaHora, String espacioSelecc, String numPlaca, String nombreUser, String telefono, String direccion) {
@@ -59,12 +60,39 @@ public class MotoGrupoF extends ParqueaderoGrupoF {
 		System.out.println("\nLECTURA DEL ARCHIVO .CSV\n");
 		try (BufferedReader leerCsv = new BufferedReader(new FileReader("TiketMoto.csv"))){
 			while((line = leerCsv.readLine())!=null) {
-				System.out.println(line+"\n");
+				System.out.println(line);
 			}
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-		System.out.print("Exito: ");
-	}
-	
+		System.out.println("\nCREACION DEL ARCHIVO .JSON\n");
+		JSONObject jsonobject = new JSONObject();
+		jsonobject.put("Nombre de usuario: ",nombreUser);
+		jsonobject.put("Modelo: ",modelo);
+		jsonobject.put("Numero de placa: ",numPlaca);
+		jsonobject.put("Telefono: ",telefono);
+		jsonobject.put("Direccion: ",direccion);
+		jsonobject.put("Fecha y hora : ",fechaHora);
+		jsonobject.put("Espacion seleccionado: ",espacioSelecc);
+		try (FileWriter filejson = new FileWriter ("TiketMoto.json")){
+			filejson.write(jsonobject.toString());
+			//filejson.close();
+			System.out.println("\n \n**DATOS DE LA MOTO GURDADOS CON EXITO EN EL ARCHIVO 'TiketMoto.json'**\n");
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("\nLECTURA DEL ARCHIVO .JSON\n");
+		try(FileReader fileReader = new FileReader ("TiketMoto.json")){
+			JSONObject jsonReader = new JSONObject (new JSONTokener(fileReader));
+			System.out.println("Nombre de usuario: " +jsonReader.getString("Nombre de usuario: "));
+			System.out.println("Modelo: " +jsonReader.getString("Modelo: "));
+			System.out.println("Numero de placa: " +jsonReader.getString("Numero de placa: "));
+			System.out.println("Telefono: " +jsonReader.getString("Telefono: "));
+			System.out.println("Direccion: " +jsonReader.getString("Direccion: "));
+			System.out.println("Fecha y hora : " +jsonReader.getString("Fecha y hora : "));
+			System.out.println("Espacion seleccionado: " +jsonReader.getString("Espacion seleccionado: "));
+		}catch (IOException e) {
+			e.printStackTrace();
+		}	
+	}	
 }
